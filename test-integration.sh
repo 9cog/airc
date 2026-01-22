@@ -73,7 +73,8 @@ echo
 
 # Test 4: Check documentation
 echo "Test 4: Checking documentation files..."
-files_to_check=("AI_INTEGRATION.md" "examples/README.md" "README")
+# Note: Update this list when adding new documentation files
+files_to_check=("AI_INTEGRATION.md" "USAGE_GUIDE.md" "examples/README.md" "README")
 all_found=true
 for file in "${files_to_check[@]}"; do
     if [ -f "$file" ]; then

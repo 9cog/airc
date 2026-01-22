@@ -82,9 +82,10 @@ detect_and_export_rc() {
 }
 
 # If script is being run directly (not sourced), run detection
-# Note: This detection works in bash/zsh but may not work in all POSIX shells
-if [ -n "$BASH_VERSION" ] && [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    detect_and_export_rc
-elif [ "$0" = "rc-integration.sh" ] || [ "$0" = "./rc-integration.sh" ]; then
-    detect_and_export_rc
-fi
+# Note: The script can be run directly or sourced for integration
+case "$0" in
+    *rc-integration.sh|*/rc-integration.sh|./rc-integration.sh)
+        # Script is being run directly
+        detect_and_export_rc
+        ;;
+esac

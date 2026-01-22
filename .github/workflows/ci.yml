@@ -10,7 +10,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - run: make
-    - run: make check
+    - name: Build rc shell
+      run: make
+    - name: Run rc tests
+      run: make check
+    - name: Run integration tests
+      run: ./test-integration.sh
+    - name: Test demo script
+      run: ./demo-integration.sh
     # run: run-test-bestline  (disabled, needs work)
 

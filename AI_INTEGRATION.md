@@ -269,6 +269,65 @@ To add rc shell support to your AI chat tool:
 3. Optionally, adjust command generation to prefer rc-compatible syntax
 4. Test with rc shell users
 
+## Troubleshooting
+
+### Build Issues
+
+**Problem:** Build fails with "parse.tab.h: No such file or directory"
+
+**Solution:** This should be automatically fixed by the Makefile. If you still encounter this:
+```bash
+make clean
+make
+```
+
+See BUILD.md for more detailed build troubleshooting.
+
+### Integration Issues
+
+**Problem:** AI tool doesn't detect rc shell
+
+**Solution:** 
+1. Verify SHELL environment variable: `echo $SHELL`
+2. Make sure it points to rc: `export SHELL=/path/to/rc`
+3. Test detection: `./demo-integration.sh`
+
+**Problem:** Commands not added to history
+
+**Solution:**
+1. Check history variable is set in ~/.rcrc: `history = $home^'/.rc_history'`
+2. Verify history file is writable: `touch ~/.rc_history`
+3. Check AI tool has history integration enabled
+
+**Problem:** Generated commands don't work in rc
+
+**Solution:**
+- Most basic Unix commands work the same
+- For advanced features, check command syntax differences in this document
+- RC uses different syntax for: command substitution (`` `{cmd} ``), loops (`for(var in list) cmd`), conditionals (`if(test) cmd`)
+
+### Testing the Integration
+
+Run the comprehensive demo:
+```bash
+./demo-integration.sh
+```
+
+Run the test suite:
+```bash
+./test-integration.sh
+```
+
+Test shell detection manually:
+```bash
+# POSIX shell
+. ./rc-integration.sh
+detect_rc_shell && echo "RC detected"
+
+# RC shell
+./rc -c '. ./rc-shell.rc; rcshell_info'
+```
+
 ## References
 
 - [Plan 9 rc shell manual](http://doc.cat-v.org/plan_9/4th_edition/papers/rc)

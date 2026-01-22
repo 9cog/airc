@@ -1,0 +1,53 @@
+# Example .rcrc configuration for AI chat integration
+#
+# This file can be placed in your home directory as ~/.rcrc
+# to configure rc shell for use with AI chat tools like aichat.
+#
+# Usage: Copy this file to ~/.rcrc and customize as needed.
+
+# Configure history file location
+# This is important for AI chat tools to track command history
+history = $home^'/.rc_history'
+
+# Set a custom prompt (optional)
+# fn prompt {echo -n '; '}
+
+# Add common aliases (optional)
+fn l {ls -lah $*}
+fn ll {ls -la $*}
+
+# Add path if needed (optional)
+# path = ($path /usr/local/bin /opt/bin)
+
+# Set editor (optional)
+# EDITOR = vim
+# VISUAL = vim
+
+# Example functions for common tasks
+fn mkcd {
+    # Make directory and cd into it
+    mkdir -p $1 && cd $1
+}
+
+fn find-file {
+    # Find files by name
+    find . -name $1 -type f
+}
+
+fn find-text {
+    # Find text in files
+    grep -r $1 .
+}
+
+# History size management (optional)
+# Note: rc doesn't have built-in history size limits
+# You can periodically trim the history file with:
+# fn trim-history {
+#     tail -1000 $history > $history.tmp && mv $history.tmp $history
+# }
+
+# Environment variables for AI tools
+# Ensure SHELL is set for proper detection
+# (usually set by your login shell)
+
+# End of .rcrc

@@ -1,16 +1,32 @@
 --- a/src/utils/command.rs
 +++ b/src/utils/command.rs
-@@ -120,6 +120,9 @@ pub fn append_to_shell_history(shell: &str, command: &str, exit_code: i32) -> 
+@@ -45,6 +45,7 @@ impl Shell {
+     pub fn detect() -> Self {
+         let cmd = env::var("SHELL").ok().or_else(|| {
+             if cfg!(windows) {
++                // Windows shell detection
+                 if let Ok(ps_module_path) = env::var("PSModulePath") {
+                     let ps_module_path = ps_module_path.to_lowercase();
+                     if ps_module_path.starts_with(r"c:\users") {
+@@ -74,6 +75,7 @@ impl Shell {
+         };
+         let shell_arg = match name {
+             "powershell" | "pwsh" => "-Command",
++            "rc" => "-c",  // Plan 9 rc shell uses -c like bash/zsh/fish
+             "cmd" => "/C",
+             _ => "-c",
+         };
+@@ -120,6 +122,9 @@ pub fn append_to_shell_history(shell: &str, command: &str, exit_code: i32) -> 
          let now = now_timestamp();
          let history_txt = if shell == "fish" {
              format!("- cmd: {command}\n  when: {now}")
 +        } else if shell == "rc" {
-+            // rc shell: simple format, just append the command
-+            command
++            // Plan 9 rc shell: simple format, just append the command (like bash/sh)
++            command.to_string()
          } else if shell == "zsh" {
              format!(": {now}:{exit_code};{command}",)
          } else {
-@@ -150,6 +153,10 @@ fn get_history_file(shell: &str) -> Option<PathBuf> {
+@@ -150,6 +155,11 @@ fn get_history_file(shell: &str) -> Option<PathBuf> {
              .ok()
              .map(PathBuf::from)
              .or(Some(home_dir()?.join(".bash_history"))),
@@ -18,6 +34,7 @@
 +            .ok()
 +            .map(PathBuf::from)
 +            .or_else(|| Some(home_dir()?.join(".rc_history"))),
++            // Check $history env var first, then default to ~/.rc_history
          "zsh" => env::var("HISTFILE")
              .ok()
              .map(PathBuf::from)

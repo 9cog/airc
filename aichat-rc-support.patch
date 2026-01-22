@@ -1,3 +1,17 @@
+# Plan 9 RC Shell Support Patch for aichat
+# 
+# This patch adds Plan 9 rc shell support to sigoden/aichat
+# Target: aichat v0.21.0 and later (tested with main branch as of 2026-01)
+# 
+# Apply with:
+#   cd aichat
+#   patch -p1 < /path/to/aichat-rc-support.patch
+#
+# Changes:
+# - Adds rc shell detection in Shell::detect()
+# - Adds rc history file location support
+# - Adds rc history format (simple line-by-line)
+#
 --- a/src/utils/command.rs
 +++ b/src/utils/command.rs
 @@ -45,6 +45,7 @@ impl Shell {

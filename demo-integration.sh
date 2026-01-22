@@ -35,20 +35,28 @@ echo ""
 echo -e "${BLUE}Testing Integration Scripts:${NC}\n"
 
 echo -e "${YELLOW}1. Testing rc-integration.sh (POSIX shell)...${NC}"
-if . ./rc-integration.sh && detect_rc_shell; then
-    echo -e "${GREEN}✓ Shell detected as rc${NC}"
-    echo "  Shell name: $(export_rc_shell_info)"
-    echo "  Shell command: $(export_rc_shell_cmd)"
-    echo "  Shell argument: $(export_rc_shell_arg)"
-    echo "  History file: $(get_rc_history_file)"
+if [ ! -f ./rc-integration.sh ]; then
+    echo -e "${YELLOW}✗ rc-integration.sh not found${NC}"
 else
-    echo -e "${YELLOW}✗ Shell not detected as rc (may need to run in rc)${NC}"
+    if . ./rc-integration.sh && detect_rc_shell; then
+        echo -e "${GREEN}✓ Shell detected as rc${NC}"
+        echo "  Shell name: $(export_rc_shell_info)"
+        echo "  Shell command: $(export_rc_shell_cmd)"
+        echo "  Shell argument: $(export_rc_shell_arg)"
+        echo "  History file: $(get_rc_history_file)"
+    else
+        echo -e "${YELLOW}✗ Shell not detected as rc (may need to run in rc)${NC}"
+    fi
 fi
 echo ""
 
 echo -e "${YELLOW}2. Testing rc-shell.rc (native rc script)...${NC}"
-$RC_PATH -c '. ./rc-shell.rc; rcshell_detect'
-echo -e "${GREEN}✓ RC native detection script works${NC}"
+if [ ! -f ./rc-shell.rc ]; then
+    echo -e "${YELLOW}✗ rc-shell.rc not found${NC}"
+else
+    $RC_PATH -c '. ./rc-shell.rc; rcshell_detect'
+    echo -e "${GREEN}✓ RC native detection script works${NC}"
+fi
 echo ""
 
 # Test Python integration
@@ -82,10 +90,12 @@ echo ""
 echo -e "${BLUE}History Management:${NC}\n"
 
 # Append some commands to history
-. ./rc-integration.sh
-append_rc_history "echo 'test command 1'" 0
-append_rc_history "ls -la" 0
-append_rc_history "pwd" 0
+if [ -f ./rc-integration.sh ]; then
+    . ./rc-integration.sh
+    append_rc_history "echo 'test command 1'" 0
+    append_rc_history "ls -la" 0
+    append_rc_history "pwd" 0
+fi
 
 if [ -f "$history" ]; then
     echo -e "${GREEN}✓ History file created: $history${NC}"

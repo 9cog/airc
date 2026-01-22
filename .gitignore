@@ -1,0 +1,10 @@
+config.h
+sigmsgs.[ch]
+statval.h
+version.h
+*.o
+history
+mksignal
+mkstatval
+rc
+tripping

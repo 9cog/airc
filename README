@@ -48,3 +48,21 @@ the file config.h does not already exist, then you have to create it
 with the following command:
 
 	$ make config.h
+
+
+AI Chat Integration
+--------------------
+
+rc includes integration support for AI chat tools like aichat. This allows
+AI assistants to detect the rc shell and generate appropriate commands.
+
+See AI_INTEGRATION.md for detailed documentation on:
+- Using rc with AI chat tools
+- Shell detection for rc
+- History file configuration
+- Integration examples in Rust and Python
+
+Quick start for AI chat tools:
+- Set SHELL environment variable: export SHELL=/usr/local/bin/rc
+- Configure history: history = $home^'/.rc_history' (in ~/.rcrc)
+- Use provided integration scripts in rc-integration.sh and rc-shell.rc

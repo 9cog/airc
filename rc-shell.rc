@@ -1,0 +1,32 @@
+# rc-shell.rc -- Shell detection and integration helper for Plan 9 rc shell
+# This script provides information about the rc shell for AI chat tools like aichat
+
+fn rcshell_info {
+	echo 'rc'
+}
+
+fn rcshell_cmd {
+	echo $0
+}
+
+fn rcshell_arg {
+	echo '-c'
+}
+
+fn rcshell_history {
+	# Return the history file location for rc shell
+	if (~ $history ()) {
+		# If $history is not set, use default location
+		echo $home^'/.rc_history'
+	} else {
+		echo $history
+	}
+}
+
+fn rcshell_detect {
+	# Outputs shell detection info in format compatible with aichat
+	echo 'SHELL_NAME=rc'
+	echo 'SHELL_CMD='^$0
+	echo 'SHELL_ARG=-c'
+	echo 'SHELL_HISTORY='^`{rcshell_history}
+}

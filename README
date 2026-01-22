@@ -56,11 +56,14 @@ AI Chat Integration
 rc includes integration support for AI chat tools like aichat. This allows
 AI assistants to detect the rc shell and generate appropriate commands.
 
-See AI_INTEGRATION.md for detailed documentation on:
-- Using rc with AI chat tools
-- Shell detection for rc
-- History file configuration
+See AI_INTEGRATION.md for detailed technical documentation and
+USAGE_GUIDE.md for practical usage examples.
+
+Key features:
+- Automatic shell detection for rc
+- History file configuration ($history or ~/.rc_history)
 - Integration examples in Rust and Python
+- Support scripts for AI tool developers
 
 Quick start for AI chat tools:
 - Set SHELL environment variable: export SHELL=/usr/local/bin/rc

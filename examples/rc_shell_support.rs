@@ -3,6 +3,10 @@
 //
 // This file demonstrates the minimal changes needed to add Plan 9 rc shell
 // support to AI chat tools. It follows the same patterns used in sigoden/aichat.
+//
+// To compile this example, add to your Cargo.toml:
+// [dependencies]
+// dirs = "5.0"
 
 use std::{
     env,
@@ -84,6 +88,8 @@ pub fn detect_shell() -> Shell {
 
 /// Get the history file path for a given shell, including rc shell support
 pub fn get_history_file(shell: &str) -> Option<PathBuf> {
+    // Note: This function uses the dirs crate for home directory detection
+    // Add to Cargo.toml: dirs = "5.0"
     let home_dir = || dirs::home_dir();
     
     match shell {

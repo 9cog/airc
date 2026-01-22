@@ -1,19 +1,16 @@
-diff --git a/src/utils/command.rs b/src/utils/command.rs
-index 1234567..abcdefg 100644
 --- a/src/utils/command.rs
 +++ b/src/utils/command.rs
-@@ -110,6 +110,11 @@ pub fn append_to_shell_history(shell: &str, command: &str, exit_code: i32) -> 
-     if let Some(history_file) = get_history_file(shell) {
-         let command = command.replace('\n', " ");
+@@ -120,6 +120,9 @@ pub fn append_to_shell_history(shell: &str, command: &str, exit_code: i32) -> 
          let now = now_timestamp();
-+        let history_txt = if shell == "rc" {
-+            // rc shell: simple format, just append the command
-+            command
-+        } else if shell == "fish" {
          let history_txt = if shell == "fish" {
              format!("- cmd: {command}\n  when: {now}")
++        } else if shell == "rc" {
++            // rc shell: simple format, just append the command
++            command
          } else if shell == "zsh" {
-@@ -145,6 +150,12 @@ fn get_history_file(shell: &str) -> Option<PathBuf> {
+             format!(": {now}:{exit_code};{command}",)
+         } else {
+@@ -150,6 +153,10 @@ fn get_history_file(shell: &str) -> Option<PathBuf> {
              .ok()
              .map(PathBuf::from)
              .or(Some(home_dir()?.join(".bash_history"))),

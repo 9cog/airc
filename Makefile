@@ -33,7 +33,7 @@ rc: $(OBJS)
 	[ "$(EDIT)" = "null" ] && ledit="" || ledit="-l$(EDIT)"; \
 	$(CC) $(_LDFLAGS) $(_CFLAGS) -o $@ $(OBJS) $$ledit $(LDLIBS)
 
-$(OBJS): Makefile $(HEADERS) config.h
+$(OBJS): Makefile $(HEADERS) config.h parse.tab.h
 builtins.o: addon.c
 exec.o: execve.c
 input.o: develop.c
@@ -47,7 +47,19 @@ config.h:
 	@echo "GEN $@"
 	cp "$(srcdir)/config.def.h" $@
 
-lex.o parse.o: parse.c
+lex.o parse.o: parse.c parse.h
+
+# Ensure parse.tab.h symlink exists for parse.c
+parse.h: parse.y
+	@echo "GEN parse.c"
+	$(YACC) -b parse -d parse.y
+	mv parse.tab.c parse.c
+	mv parse.tab.h parse.h
+
+# parse.c includes parse.tab.h, so create a symlink to parse.h
+parse.tab.h: parse.h
+	@echo "LN $@"
+	ln -sf parse.h parse.tab.h
 
 .y.c:
 	@echo "GEN $@"

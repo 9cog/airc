@@ -27,6 +27,8 @@ rc is built and installed using the following commands:
 	$ make
 	# make install
 
+For detailed build instructions, troubleshooting, and build options, see BUILD.md.
+
 Please note, that the second command requires root privileges. By
 default, rc is installed using the prefix "/usr/local", so the full path
 of the executable will be "/usr/local/bin/rc".
@@ -66,6 +68,8 @@ Key features:
 - Support scripts for AI tool developers
 
 Quick start for AI chat tools:
+- Build and install rc: See BUILD.md for detailed instructions
 - Set SHELL environment variable: export SHELL=/usr/local/bin/rc
 - Configure history: history = $home^'/.rc_history' (in ~/.rcrc)
 - Use provided integration scripts in rc-integration.sh and rc-shell.rc
+- Try the demo: ./demo-integration.sh

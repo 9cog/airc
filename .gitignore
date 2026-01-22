@@ -8,3 +8,9 @@ mksignal
 mkstatval
 rc
 tripping
+parse.tab.h
+test-history/-p
+test-history/--p
+test-history/*.out
+test-history/*.test
+test-bestline

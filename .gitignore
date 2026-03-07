@@ -14,3 +14,5 @@ test-history/--p
 test-history/*.out
 test-history/*.test
 test-bestline
+__pycache__/
+*.pyc

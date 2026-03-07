@@ -103,12 +103,118 @@ else
 fi
 echo
 
+# Test 6: Bash-to-rc converter
+echo "Test 6: Testing bash-to-rc command converter..."
+if [ -f examples/bash_to_rc_converter.py ]; then
+    # Test command substitution conversion
+    result=$(echo 'result=$(hostname)' | python3 examples/bash_to_rc_converter.py)
+    if echo "$result" | grep -q '`{hostname}'; then
+        echo "✓ Command substitution conversion works"
+    else
+        echo "✗ Command substitution conversion failed"
+        echo "Output: $result"
+        exit 1
+    fi
+
+    # Test assignment conversion
+    result=$(echo 'VAR=hello' | python3 examples/bash_to_rc_converter.py)
+    if echo "$result" | grep -q 'VAR = hello'; then
+        echo "✓ Variable assignment conversion works"
+    else
+        echo "✗ Variable assignment conversion failed"
+        echo "Output: $result"
+        exit 1
+    fi
+
+    # Test for loop conversion
+    result=$(printf 'for f in *.txt; do\n  echo $f\ndone\n' | python3 examples/bash_to_rc_converter.py)
+    if echo "$result" | grep -q 'for(f in \*.txt)'; then
+        echo "✓ For loop conversion works"
+    else
+        echo "✗ For loop conversion failed"
+        echo "Output: $result"
+        exit 1
+    fi
+
+    # Test if statement conversion
+    result=$(printf 'if [ -f file.txt ]; then\n  echo yes\nfi\n' | python3 examples/bash_to_rc_converter.py)
+    if echo "$result" | grep -q 'if(test -f file.txt)'; then
+        echo "✓ If statement conversion works"
+    else
+        echo "✗ If statement conversion failed"
+        echo "Output: $result"
+        exit 1
+    fi
+
+    # Test stderr redirection conversion
+    result=$(echo 'make 2>&1 | head' | python3 examples/bash_to_rc_converter.py)
+    if echo "$result" | grep -q '>\[2=1\]'; then
+        echo "✓ Stderr redirection conversion works"
+    else
+        echo "✗ Stderr redirection conversion failed"
+        echo "Output: $result"
+        exit 1
+    fi
+
+    # Test shebang conversion
+    result=$(echo '#!/bin/bash' | python3 examples/bash_to_rc_converter.py)
+    if echo "$result" | grep -q '#!/usr/local/bin/rc'; then
+        echo "✓ Shebang conversion works"
+    else
+        echo "✗ Shebang conversion failed"
+        echo "Output: $result"
+        exit 1
+    fi
+else
+    echo "✗ examples/bash_to_rc_converter.py not found"
+    exit 1
+fi
+echo
+
+# Test 7: Verify convert-to-rc.sh wrapper
+echo "Test 7: Testing convert-to-rc.sh wrapper..."
+if [ -f convert-to-rc.sh ]; then
+    result=$(echo 'result=$(pwd)' | ./convert-to-rc.sh)
+    if echo "$result" | grep -q '`{pwd}'; then
+        echo "✓ convert-to-rc.sh wrapper works"
+    else
+        echo "✗ convert-to-rc.sh wrapper failed"
+        echo "Output: $result"
+        exit 1
+    fi
+else
+    echo "✗ convert-to-rc.sh not found"
+    exit 1
+fi
+echo
+
+# Test 8: Verify RC_SYNTAX_GUIDE.md
+echo "Test 8: Checking RC_SYNTAX_GUIDE.md..."
+if [ -f RC_SYNTAX_GUIDE.md ]; then
+    # Check for key sections
+    if grep -q "Command Substitution" RC_SYNTAX_GUIDE.md && \
+       grep -q "For Loop" RC_SYNTAX_GUIDE.md && \
+       grep -q "Functions" RC_SYNTAX_GUIDE.md; then
+        echo "✓ RC_SYNTAX_GUIDE.md exists and contains key sections"
+    else
+        echo "✗ RC_SYNTAX_GUIDE.md is missing key sections"
+        exit 1
+    fi
+else
+    echo "✗ RC_SYNTAX_GUIDE.md not found"
+    exit 1
+fi
+echo
+
 echo "=== All tests passed! ==="
 echo
-echo "Integration files created:"
+echo "Integration files:"
 echo "  - rc-integration.sh (POSIX shell integration)"
 echo "  - rc-shell.rc (rc shell native integration)"
+echo "  - convert-to-rc.sh (bash-to-rc syntax converter)"
 echo "  - AI_INTEGRATION.md (comprehensive documentation)"
-echo "  - examples/rc_shell_support.py (Python example)"
+echo "  - RC_SYNTAX_GUIDE.md (rc syntax reference for AI tools)"
+echo "  - examples/rc_shell_support.py (Python shell support example)"
+echo "  - examples/bash_to_rc_converter.py (bash-to-rc converter)"
 echo "  - examples/rc_shell_support.rs (Rust example)"
 echo "  - examples/README.md (examples documentation)"

@@ -1,0 +1,116 @@
+# 9cog framework integration for airc (rc shell)
+# Source this file in your .rcrc to enable AI filesystem commands.
+#
+# Prerequisites:
+#   - aifs server running (from go9p/cmd/aifs)
+#   - /ai mounted via 9P: mount -t 9p localhost:5641 /ai
+
+if(~ $NINEP_AI '')
+    NINEP_AI=/ai
+
+fn ai {
+    if(~ $#* 0) {
+        echo 'usage: ai <query>' >[1=2]
+        return 1
+    }
+    if(! test -f $NINEP_AI/sessions/$pid/ctl) {
+        echo $user > $NINEP_AI/sessions/new/ctl
+    }
+    echo $"* > $NINEP_AI/sessions/$pid/ctl
+    cat $NINEP_AI/sessions/$pid/history | tail -1
+}
+
+fn aichat {
+    if(~ $#* 0) {
+        echo 'usage: aichat <message>' >[1=2]
+        return 1
+    }
+    echo $"* > $NINEP_AI/sessions/$pid/ctl
+    cat $NINEP_AI/sessions/$pid/history
+}
+
+fn know {
+    if(~ $#* 0) {
+        cat $NINEP_AI/knowledge/stats
+        return
+    }
+    echo $"* > $NINEP_AI/knowledge/query
+    cat $NINEP_AI/knowledge/query
+}
+
+fn model {
+    if(~ $#* 0) {
+        echo 'active: ' ^ `{cat $NINEP_AI/models/active}
+        echo ''
+        cat $NINEP_AI/models/list
+    }
+    if not {
+        echo $1 > $NINEP_AI/models/active
+        echo 'switched to: ' ^ $1
+    }
+}
+
+fn topo {
+    switch($1) {
+    case vertices
+        cat $NINEP_AI/topology/vertices
+    case edges
+        cat $NINEP_AI/topology/edges
+    case cells
+        cat $NINEP_AI/topology/cells
+    case phase
+        if(~ $#* 1)
+            cat $NINEP_AI/topology/lifecycle
+        if not
+            echo $2 > $NINEP_AI/topology/lifecycle
+    case *
+        cat $NINEP_AI/topology/lifecycle
+    }
+}
+
+fn features {
+    for(f in `{ls $NINEP_AI/features/}) {
+        echo '=== ' ^ $f ^ ' ==='
+        cat $NINEP_AI/features/$f
+        echo ''
+    }
+}
+
+fn sessions {
+    switch($1) {
+    case list
+        cat $NINEP_AI/sessions/
+    case show
+        if(~ $#* 1) { echo 'usage: sessions show <id>' >[1=2]; return 1 }
+        cat $NINEP_AI/sessions/$2/meta
+    case history
+        if(~ $#* 1) { echo 'usage: sessions history <id>' >[1=2]; return 1 }
+        cat $NINEP_AI/sessions/$2/history
+    case *
+        echo 'usage: sessions [list|show <id>|history <id>]' >[1=2]
+    }
+}
+
+fn 9cog {
+    switch($1) {
+    case config
+        cat $NINEP_AI/config
+    case status
+        echo '9cog framework status:'
+        echo '  mount: ' ^ $NINEP_AI
+        echo '  model: ' ^ `{cat $NINEP_AI/models/active}
+        know
+    case *
+        echo '9cog -- Cognitive 9P Framework'
+        echo ''
+        echo 'commands:'
+        echo '  ai <query>         Chat with AI'
+        echo '  know [pattern]     Query knowledge graph'
+        echo '  model [name]       List/switch models'
+        echo '  topo [sub]         Topology info'
+        echo '  features           List AI features'
+        echo '  sessions <cmd>     Manage sessions'
+        echo '  9cog config        Show configuration'
+        echo '  9cog status        Framework status'
+    }
+}

@@ -9,7 +9,6 @@
 
 #include "rc.h"
 
-#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <setjmp.h>
 #include <errno.h>
